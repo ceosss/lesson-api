@@ -11,10 +11,7 @@ import (
 func main() {
 	fmt.Println("START")
 	router := mux.NewRouter()
-	router.HandleFunc("/", home)
+	router.HandleFunc("/model", modelhandlers.AllModels).Methods("GET")
+	router.HandleFunc("/model", modelhandlers.CreateModel).Methods("POST")
 	http.ListenAndServe(":3000", router)
-}
-func home(response http.ResponseWriter, request *http.Request) {
-	// response.Write([]byte("LESSON API"))
-	modelhandlers.CreateModel(response, request)
 }
