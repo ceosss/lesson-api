@@ -11,6 +11,7 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/model", modelhandlers.AllModels).Methods("GET")
 	router.HandleFunc("/model", modelhandlers.CreateModel).Methods("POST")
 	router.HandleFunc("/model/{id}", modelhandlers.SingleModel).Methods("GET")
+	router.HandleFunc("/model/{id}", modelhandlers.UpdateModel).Methods("PUT")
 	router.HandleFunc("/model/{id}", modelhandlers.DeleteModel).Methods("DELETE")
 	return router
 }

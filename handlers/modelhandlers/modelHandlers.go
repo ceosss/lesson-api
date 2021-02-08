@@ -148,3 +148,52 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(204)
 }
+
+// UpdateModel ...
+func UpdateModel(response http.ResponseWriter, request *http.Request) {
+	var model models.Model
+	var err error
+
+	params := mux.Vars(request)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+
+	if err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	err = json.NewDecoder(request.Body).Decode(&model)
+
+	if err != nil {
+		fmt.Printf("ERROR: %v", err)
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	client, err := db.ConnectToDB()
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	modelCollection := db.GetModelCollection(client)
+
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": model}
+
+	res, err := modelCollection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+	fmt.Println("MODEL UPDATED: %v", res)
+	response.Header().Set("content-type", "application/json")
+	response.WriteHeader(204)
+
+}
