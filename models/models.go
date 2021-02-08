@@ -7,5 +7,12 @@ type Model struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
 	Name        string             `bson:"name,omitempty"`
 	Location    string             `bson:"location,omitempty"`
-	Coordinates []int              `bson:"coordinated,omitempty"`
+	Coordinates []Coordinates      `bson:"coordinates,omitempty"`
+}
+
+// Coordinates struct
+type Coordinates struct {
+	X int `bson:"x,omitempty"`
+	Y int `bson:"y,omitempty"`
+	Z int `bson:"z,omitempty"`
 }
