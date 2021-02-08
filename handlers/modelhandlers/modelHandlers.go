@@ -9,7 +9,9 @@ import (
 
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/models"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateModel creates a new model
@@ -79,4 +81,35 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(200)
 	json.NewEncoder(response).Encode(allModels)
+}
+
+//SingleModel ...
+func SingleModel(response http.ResponseWriter, request *http.Request) {
+	var model models.Model
+	var err error
+
+	params := mux.Vars(request)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+
+	if err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	client, err := db.ConnectToDB()
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	modelCollection := db.GetModelCollection(client)
+	filter := bson.M{"_id": id}
+	modelCollection.FindOne(context.TODO(), filter).Decode(&model)
+
+	response.Header().Set("content-type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(model)
 }
