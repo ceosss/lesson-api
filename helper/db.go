@@ -22,3 +22,8 @@ func connectToDB() (*mongo.Client, error) {
 	}
 	return client, nil
 }
+
+func getModelCollection(client *mongo.Client) *mongo.Collection {
+	modelCollection := client.Database("lesson-api").Collection("model")
+	return modelCollection
+}
