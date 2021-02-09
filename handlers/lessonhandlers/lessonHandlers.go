@@ -9,7 +9,9 @@ import (
 
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/models"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateLesson ...
@@ -89,4 +91,36 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(200)
 	json.NewEncoder(response).Encode(allLessons)
+}
+
+//SingleLesson ...
+func SingleLesson(response http.ResponseWriter, request *http.Request) {
+	var lesson models.Lesson
+	var err error
+
+	params := mux.Vars(request)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+
+	if err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	client, err := db.ConnectToDB()
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	lessonCollection := db.GetLessonCollection(client)
+
+	filter := bson.M{"_id": id}
+	lessonCollection.FindOne(context.TODO(), filter).Decode(&lesson)
+
+	response.Header().Set("content-type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(lesson)
 }

@@ -16,5 +16,6 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/model/{id}", modelhandlers.DeleteModel).Methods("DELETE")
 	router.HandleFunc("/lesson", lessonhandlers.AllLessons).Methods("GET")
 	router.HandleFunc("/lesson", lessonhandlers.CreateLesson).Methods("POST")
+	router.HandleFunc("/lesson/{id}", lessonhandlers.SingleLesson).Methods("GET")
 	return router
 }

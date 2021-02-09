@@ -28,7 +28,7 @@ type Question struct {
 // Option Structure
 type Option struct {
 	Option    string `json:"option" bson:"option"`
-	IsCorrect bool   `json:"option" bson:"option"`
+	IsCorrect bool   `json:"isCorrect" bson:"isCorrect"`
 }
 
 // Coordinates struct
