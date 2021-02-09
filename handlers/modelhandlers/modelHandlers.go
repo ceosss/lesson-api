@@ -77,8 +77,9 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cursor.Close(ctx)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	// defer cursor.Close(ctx)
+	cancel()
 
 	for cursor.Next(ctx) {
 		var m models.Model
@@ -200,7 +201,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}
-	fmt.Println("MODEL UPDATED: %v", res)
+	fmt.Printf("MODEL UPDATED: %v", res)
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(204)
 

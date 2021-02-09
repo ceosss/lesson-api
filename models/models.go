@@ -14,16 +14,16 @@ type Model struct {
 type Lesson struct {
 	ID       primitive.ObjectID   `json:"_id,omitempty" bson:"_id,omitempty"`
 	Name     string               `json:"name" bson:"name"`
-	Labels   []string             `json:"labels" bson:"labels"`
+	Labels   []Label              `json:"labels" bson:"labels"`
 	Models   []primitive.ObjectID `json:"models" bson:"models"`
 	Question []Question           `json:"questions" bson:"questions"`
 }
 
 // Question Structure
 type Question struct {
-	Statement   string        `json:"statement" bson:"statement"`
-	Options     []Option      `json:"options" bson:"options"`
-	Coordinates []Coordinates `json:"coordinates" bson:"coordinates"`
+	Statement   string      `json:"statement" bson:"statement"`
+	Options     []Option    `json:"options" bson:"options"`
+	Coordinates Coordinates `json:"coordinates" bson:"coordinates"`
 }
 
 // Option Structure
@@ -37,4 +37,10 @@ type Coordinates struct {
 	X int `json:"x" bson:"x"`
 	Y int `json:"y" bson:"y"`
 	Z int `json:"z" bson:"z"`
+}
+
+// Label struct
+type Label struct {
+	Label       string      `json:"label" bson:"label"`
+	Coordinates Coordinates `json:"coordinates" bson:"coordinates"`
 }

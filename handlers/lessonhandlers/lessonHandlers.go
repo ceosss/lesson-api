@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ceosss/lesson-api/helper/db"
+	"github.com/ceosss/lesson-api/helper/initializemodels"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,10 +17,14 @@ import (
 
 // CreateLesson ...
 func CreateLesson(response http.ResponseWriter, request *http.Request) {
-	var lesson models.Lesson
+	// var lesson models.Lesson
+	type n struct {
+		Name string
+	}
+	var name n
 	var err error
 
-	err = json.NewDecoder(request.Body).Decode(&lesson)
+	err = json.NewDecoder(request.Body).Decode(&name)
 
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
@@ -27,6 +32,8 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}
+
+	lesson := initializemodels.NewLesson(name.Name)
 
 	client, err := db.ConnectToDB()
 
@@ -79,8 +86,9 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cursor.Close(ctx)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	// defer cursor.Close(ctx)
+	cancel()
 
 	for cursor.Next(ctx) {
 		var l models.Lesson
@@ -158,4 +166,53 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(204)
+}
+
+// UpdateLesson ...
+func UpdateLesson(response http.ResponseWriter, request *http.Request) {
+	var lesson models.Lesson
+	var err error
+
+	params := mux.Vars(request)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+
+	if err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	err = json.NewDecoder(request.Body).Decode(&lesson)
+
+	if err != nil {
+		fmt.Printf("ERROR: %v", err)
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	client, err := db.ConnectToDB()
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	lessonCollection := db.GetLessonCollection(client)
+
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": lesson}
+
+	res, err := lessonCollection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+	fmt.Printf("LESSON UPDATED: %v", res)
+	response.Header().Set("content-type", "application/json")
+	response.WriteHeader(204)
+
 }
