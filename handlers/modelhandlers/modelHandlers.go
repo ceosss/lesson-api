@@ -9,6 +9,7 @@ import (
 
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/models"
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,6 +23,17 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
 		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	v := validator.New()
+
+	err = v.Struct(model)
+
+	if err != nil {
+		fmt.Printf("ERROR: %+v", err)
+		response.WriteHeader(http.StatusBadRequest)
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}
