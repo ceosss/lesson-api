@@ -29,3 +29,9 @@ func GetModelCollection(client *mongo.Client) *mongo.Collection {
 	modelCollection := client.Database("lesson-api").Collection("model")
 	return modelCollection
 }
+
+//GetLessonCollection ...
+func GetLessonCollection(client *mongo.Client) *mongo.Collection {
+	lessonCollection := client.Database("lesson-api").Collection("lesson")
+	return lessonCollection
+}

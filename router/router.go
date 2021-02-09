@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ceosss/lesson-api/handlers/lessonhandlers"
 	"github.com/ceosss/lesson-api/handlers/modelhandlers"
 	"github.com/gorilla/mux"
 )
@@ -13,5 +14,6 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/model/{id}", modelhandlers.SingleModel).Methods("GET")
 	router.HandleFunc("/model/{id}", modelhandlers.UpdateModel).Methods("PUT")
 	router.HandleFunc("/model/{id}", modelhandlers.DeleteModel).Methods("DELETE")
+	router.HandleFunc("/lesson", lessonhandlers.CreateLesson).Methods("POST")
 	return router
 }

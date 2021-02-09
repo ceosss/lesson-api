@@ -38,6 +38,14 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	modelCollection := db.GetModelCollection(client)
 
 	res, err := modelCollection.InsertOne(context.TODO(), model)
+
+	if err != nil {
+		fmt.Printf("ERROR: %v", err)
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
 	res.InsertedID = ""
 
 	response.Header().Set("content-type", "application/json")
