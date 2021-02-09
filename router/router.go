@@ -6,9 +6,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//NewRouter ...
+//NewRouter - Return a new handler with configured routes
 func NewRouter() *mux.Router {
+
+	// New Multiplexer
 	router := mux.NewRouter()
+
+	// All the handlers
 	router.HandleFunc("/model", modelhandlers.AllModels).Methods("GET")
 	router.HandleFunc("/model", modelhandlers.CreateModel).Methods("POST")
 	router.HandleFunc("/model/{id}", modelhandlers.SingleModel).Methods("GET")

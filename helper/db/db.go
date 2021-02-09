@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//ConnectToDB ...
+//ConnectToDB - Creates a connection to DB
 func ConnectToDB() (*mongo.Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -24,13 +24,13 @@ func ConnectToDB() (*mongo.Client, error) {
 	return client, nil
 }
 
-//GetModelCollection ...
+//GetModelCollection - Connects to the Model Collection
 func GetModelCollection(client *mongo.Client) *mongo.Collection {
 	modelCollection := client.Database("lesson-api").Collection("model")
 	return modelCollection
 }
 
-//GetLessonCollection ...
+//GetLessonCollection - Connects to the Lesson Collection
 func GetLessonCollection(client *mongo.Client) *mongo.Collection {
 	lessonCollection := client.Database("lesson-api").Collection("lesson")
 	return lessonCollection

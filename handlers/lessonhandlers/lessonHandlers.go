@@ -15,9 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// CreateLesson ...
+// CreateLesson - Creates a new Lesson with the name provided
 func CreateLesson(response http.ResponseWriter, request *http.Request) {
-	// var lesson models.Lesson
 	type n struct {
 		Name string
 	}
@@ -62,7 +61,7 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 	response.Write([]byte(`{  "response": "Lesson Created Successfully"}`))
 }
 
-// AllLessons ...
+// AllLessons - Fetches all the Lessons
 func AllLessons(response http.ResponseWriter, request *http.Request) {
 	var allLessons []models.Lesson
 	var err error
@@ -87,7 +86,6 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	// defer cursor.Close(ctx)
 	cancel()
 
 	for cursor.Next(ctx) {
@@ -101,7 +99,7 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(allLessons)
 }
 
-//SingleLesson ...
+//SingleLesson - Fetches a specific lesson
 func SingleLesson(response http.ResponseWriter, request *http.Request) {
 	var lesson models.Lesson
 	var err error
@@ -133,7 +131,7 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(lesson)
 }
 
-//DeleteLesson ...
+//DeleteLesson - Deletes a specific lesson
 func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 	var err error
 	params := mux.Vars(request)
@@ -168,7 +166,7 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(204)
 }
 
-// UpdateLesson ...
+// UpdateLesson - Updates a specific lesson
 func UpdateLesson(response http.ResponseWriter, request *http.Request) {
 	var lesson models.Lesson
 	var err error

@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// NewLesson ...
+// NewLesson - Initializes a new lesson with the name provided
 func NewLesson(name string) models.Lesson {
 	lesson := models.Lesson{
 		Name:     name,

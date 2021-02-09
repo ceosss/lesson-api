@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// CreateModel creates a new model
+// CreateModel - Creates a new model
 func CreateModel(response http.ResponseWriter, request *http.Request) {
 	var model models.Model
 	var err error
@@ -53,7 +53,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	response.Write([]byte(`{  "response": "Model Created Successfully"}`))
 }
 
-// AllModels ...
+// AllModels - Fetches all the models
 func AllModels(response http.ResponseWriter, request *http.Request) {
 	var allModels []models.Model
 	var err error
@@ -78,7 +78,6 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	// defer cursor.Close(ctx)
 	cancel()
 
 	for cursor.Next(ctx) {
@@ -92,7 +91,7 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(allModels)
 }
 
-//SingleModel ...
+//SingleModel - Fetches a specific model
 func SingleModel(response http.ResponseWriter, request *http.Request) {
 	var model models.Model
 	var err error
@@ -123,7 +122,7 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(model)
 }
 
-//DeleteModel ...
+//DeleteModel - Deletes a specific model
 func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	var err error
 	params := mux.Vars(request)
@@ -158,7 +157,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(204)
 }
 
-// UpdateModel ...
+// UpdateModel - Updates a specific model
 func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	var model models.Model
 	var err error
