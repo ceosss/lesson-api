@@ -124,3 +124,38 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(http.StatusOK)
 	json.NewEncoder(response).Encode(lesson)
 }
+
+//DeleteLesson ...
+func DeleteLesson(response http.ResponseWriter, request *http.Request) {
+	var err error
+	params := mux.Vars(request)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+
+	if err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	client, err := db.ConnectToDB()
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	lessonCollection := db.GetLessonCollection(client)
+
+	filter := bson.M{"_id": id}
+
+	res, err := lessonCollection.DeleteOne(context.TODO(), filter)
+	fmt.Printf("LESSON DELETED: %v", res)
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	response.Header().Set("content-type", "application/json")
+	response.WriteHeader(204)
+}

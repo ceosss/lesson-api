@@ -146,7 +146,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	filter := bson.M{"_id": id}
 
 	res, err := modelCollection.DeleteOne(context.TODO(), filter)
-	fmt.Println("MODEL DELETED: %v", res)
+	fmt.Printf("MODEL DELETED: %v", res)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))

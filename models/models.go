@@ -13,6 +13,7 @@ type Model struct {
 // Lesson Structure
 type Lesson struct {
 	ID       primitive.ObjectID   `json:"_id,omitempty" bson:"_id,omitempty"`
+	Name     string               `json:"name" bson:"name"`
 	Labels   []string             `json:"labels" bson:"labels"`
 	Models   []primitive.ObjectID `json:"models" bson:"models"`
 	Question []Question           `json:"questions" bson:"questions"`
