@@ -23,10 +23,6 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 
 	err = json.NewDecoder(request.Body).Decode(&model)
 	if err != nil {
-		// fmt.Printf("ERROR: %v", err)
-		// response.WriteHeader(http.StatusInternalServerError)
-		// response.Write([]byte(`{"message": "` + err.Error() + `"}`))
-		// customError.InternalServerError(&response, err)
 		customerror.InternalServerError(&response, err)
 		return
 	}
@@ -45,9 +41,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -56,9 +50,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	res, err := modelCollection.InsertOne(context.TODO(), model)
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -77,9 +69,7 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -88,9 +78,7 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 	cursor, err := modelCollection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -124,8 +112,7 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -152,8 +139,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 
 	client, err := db.ConnectToDB()
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -164,8 +150,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	res, err := modelCollection.DeleteOne(context.TODO(), filter)
 	fmt.Printf("MODEL DELETED: %v", res)
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -190,9 +175,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	err = json.NewDecoder(request.Body).Decode(&model)
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -210,8 +193,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -223,8 +205,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	res, err := modelCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 	fmt.Printf("MODEL UPDATED: %v", res)
