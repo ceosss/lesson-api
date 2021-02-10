@@ -12,9 +12,16 @@ func InternalServerError(response *http.ResponseWriter, err error) {
 	(*response).Write([]byte(`{"message": "` + err.Error() + `"}`))
 }
 
-// StatusBadRequest - Sets the error to Bad Request
-func StatusBadRequest(response *http.ResponseWriter, err error) {
+// BadRequest - Sets the error to Bad Request
+func BadRequest(response *http.ResponseWriter, err error) {
 	fmt.Printf("ERROR: %+v", err)
 	(*response).WriteHeader(http.StatusBadRequest)
+	(*response).Write([]byte(`{"message": "` + err.Error() + `"}`))
+}
+
+// Unauthorized - Sets the error to Unauthorized
+func Unauthorized(response *http.ResponseWriter, err error) {
+	fmt.Printf("ERROR: %+v", err)
+	(*response).WriteHeader(http.StatusUnauthorized)
 	(*response).Write([]byte(`{"message": "` + err.Error() + `"}`))
 }

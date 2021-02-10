@@ -1,6 +1,9 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // Model Structure
 type Model struct {
@@ -43,4 +46,16 @@ type Coordinates struct {
 	X int `json:"x" bson:"x"`
 	Y int `json:"y" bson:"y"`
 	Z int `json:"z" bson:"z"`
+}
+
+// User struct
+type User struct {
+	Email    string `json:"email" bson:"email" validate:"required,email,min=3"`
+	Password string `json:"password" bson:"password" validate:"required,min=6"`
+}
+
+// Claims struct
+type Claims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
 }

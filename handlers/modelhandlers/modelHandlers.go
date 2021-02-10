@@ -23,7 +23,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 
 	err = json.NewDecoder(request.Body).Decode(&model)
 	if err != nil {
-		customerror.InternalServerError(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
@@ -32,7 +32,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	err = v.Struct(model)
 
 	if err != nil {
-		customerror.StatusBadRequest(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
@@ -102,7 +102,7 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		customerror.StatusBadRequest(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
@@ -129,7 +129,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		customerror.StatusBadRequest(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
@@ -163,14 +163,14 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		customerror.StatusBadRequest(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
 	err = json.NewDecoder(request.Body).Decode(&model)
 
 	if err != nil {
-		customerror.InternalServerError(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 
@@ -179,7 +179,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	err = v.Struct(model)
 
 	if err != nil {
-		customerror.StatusBadRequest(&response, err)
+		customerror.BadRequest(&response, err)
 		return
 	}
 

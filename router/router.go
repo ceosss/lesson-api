@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ceosss/lesson-api/handlers/authhandlers"
 	"github.com/ceosss/lesson-api/handlers/lessonhandlers"
 	"github.com/ceosss/lesson-api/handlers/modelhandlers"
 	"github.com/gorilla/mux"
@@ -27,5 +28,8 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/lesson/{id}", lessonhandlers.SingleLesson).Methods("GET")
 	router.HandleFunc("/lesson/{id}", lessonhandlers.UpdateLesson).Methods("PUT")
 	router.HandleFunc("/lesson/{id}", lessonhandlers.DeleteLesson).Methods("DELETE")
+
+	// Auth Handlers
+	router.HandleFunc("/login", authhandlers.Login).Methods("GET")
 	return router
 }
