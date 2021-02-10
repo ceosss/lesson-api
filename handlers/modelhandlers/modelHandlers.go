@@ -32,9 +32,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 	err = v.Struct(model)
 
 	if err != nil {
-		fmt.Printf("ERROR: %+v", err)
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.StatusBadRequest(&response, err)
 		return
 	}
 
@@ -104,8 +102,7 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.StatusBadRequest(&response, err)
 		return
 	}
 
@@ -132,8 +129,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.StatusBadRequest(&response, err)
 		return
 	}
 
@@ -167,8 +163,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.StatusBadRequest(&response, err)
 		return
 	}
 
@@ -184,9 +179,7 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	err = v.Struct(model)
 
 	if err != nil {
-		fmt.Printf("ERROR: %+v", err)
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.StatusBadRequest(&response, err)
 		return
 	}
 
