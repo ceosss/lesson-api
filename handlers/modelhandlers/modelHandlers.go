@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/go-playground/validator/v10"
@@ -19,11 +20,14 @@ import (
 func CreateModel(response http.ResponseWriter, request *http.Request) {
 	var model models.Model
 	var err error
+
 	err = json.NewDecoder(request.Body).Decode(&model)
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		// fmt.Printf("ERROR: %v", err)
+		// response.WriteHeader(http.StatusInternalServerError)
+		// response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		// customError.InternalServerError(&response, err)
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -188,6 +192,17 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
 		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		return
+	}
+
+	v := validator.New()
+
+	err = v.Struct(model)
+
+	if err != nil {
+		fmt.Printf("ERROR: %+v", err)
+		response.WriteHeader(http.StatusBadRequest)
 		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
 		return
 	}

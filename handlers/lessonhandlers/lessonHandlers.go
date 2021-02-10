@@ -32,6 +32,13 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	if len(name.Name) < 3 {
+		fmt.Printf("ERROR: Invalid Name length")
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message": "Invalid Name length"}`))
+		return
+	}
+
 	lesson := initializemodels.NewLesson(name.Name)
 
 	client, err := db.ConnectToDB()
@@ -54,11 +61,13 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	res.InsertedID = ""
+	id := res.InsertedID.(primitive.ObjectID).Hex()
+
+	fmt.Println(id)
 
 	response.Header().Set("content-type", "application/json")
 	response.WriteHeader(201)
-	response.Write([]byte(`{  "response": "Lesson Created Successfully"}`))
+	response.Write([]byte(`{  "response": "` + id + `"}`))
 }
 
 // AllLessons - Fetches all the Lessons
