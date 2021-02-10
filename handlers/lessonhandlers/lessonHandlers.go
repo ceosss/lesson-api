@@ -3,10 +3,12 @@ package lessonhandlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/initializemodels"
 	"github.com/ceosss/lesson-api/models"
@@ -26,16 +28,12 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 	err = json.NewDecoder(request.Body).Decode(&name)
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.BadRequest(&response, err)
 		return
 	}
 
 	if len(name.Name) < 3 {
-		fmt.Printf("ERROR: Invalid Name length")
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "Invalid Name length"}`))
+		customerror.BadRequest(&response, errors.New("Invalid Name"))
 		return
 	}
 
@@ -44,9 +42,7 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -55,9 +51,7 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 	res, err := lessonCollection.InsertOne(context.TODO(), lesson)
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -78,9 +72,7 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -89,9 +81,7 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 	cursor, err := lessonCollection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -117,16 +107,14 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.BadRequest(&response, err)
 		return
 	}
 
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -147,15 +135,13 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.BadRequest(&response, err)
 		return
 	}
 
 	client, err := db.ConnectToDB()
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -166,8 +152,7 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 	res, err := lessonCollection.DeleteOne(context.TODO(), filter)
 	fmt.Printf("LESSON DELETED: %v", res)
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -184,25 +169,21 @@ func UpdateLesson(response http.ResponseWriter, request *http.Request) {
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.BadRequest(&response, err)
 		return
 	}
 
 	err = json.NewDecoder(request.Body).Decode(&lesson)
 
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
 	client, err := db.ConnectToDB()
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
@@ -214,8 +195,7 @@ func UpdateLesson(response http.ResponseWriter, request *http.Request) {
 	res, err := lessonCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		customerror.InternalServerError(&response, err)
 		return
 	}
 	fmt.Printf("LESSON UPDATED: %v", res)
