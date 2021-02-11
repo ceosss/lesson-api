@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ceosss/lesson-api/helper/cookiehandler"
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/models"
@@ -61,8 +62,15 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 
 // AllModels - Fetches all the models
 func AllModels(response http.ResponseWriter, request *http.Request) {
-	var allModels []models.Model
+
 	var err error
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var allModels []models.Model
 
 	client, err := db.ConnectToDB()
 
