@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ceosss/lesson-api/helper/cookiehandler"
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/initializemodels"
@@ -19,11 +20,19 @@ import (
 
 // CreateLesson - Creates a new Lesson with the name provided
 func CreateLesson(response http.ResponseWriter, request *http.Request) {
+
+	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
 	type n struct {
 		Name string
 	}
 	var name n
-	var err error
 
 	err = json.NewDecoder(request.Body).Decode(&name)
 
@@ -66,8 +75,15 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 
 // AllLessons - Fetches all the Lessons
 func AllLessons(response http.ResponseWriter, request *http.Request) {
-	var allLessons []models.Lesson
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var allLessons []models.Lesson
 
 	client, err := db.ConnectToDB()
 
@@ -100,8 +116,15 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 
 //SingleLesson - Fetches a specific lesson
 func SingleLesson(response http.ResponseWriter, request *http.Request) {
-	var lesson models.Lesson
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var lesson models.Lesson
 
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])
@@ -131,6 +154,13 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 //DeleteLesson - Deletes a specific lesson
 func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
@@ -162,8 +192,15 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 
 // UpdateLesson - Updates a specific lesson
 func UpdateLesson(response http.ResponseWriter, request *http.Request) {
-	var lesson models.Lesson
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var lesson models.Lesson
 
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])
