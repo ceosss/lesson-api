@@ -35,3 +35,9 @@ func GetLessonCollection(client *mongo.Client) *mongo.Collection {
 	lessonCollection := client.Database("lesson-api").Collection("lesson")
 	return lessonCollection
 }
+
+//GetUserCollection - Connects to the User Collection
+func GetUserCollection(client *mongo.Client) *mongo.Collection {
+	userCollection := client.Database("lesson-api").Collection("user")
+	return userCollection
+}
