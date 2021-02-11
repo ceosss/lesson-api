@@ -19,8 +19,15 @@ import (
 
 // CreateModel - Creates a new model
 func CreateModel(response http.ResponseWriter, request *http.Request) {
-	var model models.Model
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var model models.Model
 
 	err = json.NewDecoder(request.Body).Decode(&model)
 	if err != nil {
@@ -64,6 +71,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 func AllModels(response http.ResponseWriter, request *http.Request) {
 
 	var err error
+
 	err = cookiehandler.VerifyCookie(response, request)
 
 	if err != nil {
@@ -103,8 +111,15 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 
 //SingleModel - Fetches a specific model
 func SingleModel(response http.ResponseWriter, request *http.Request) {
-	var model models.Model
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var model models.Model
 
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])
@@ -133,6 +148,13 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 //DeleteModel - Deletes a specific model
 func DeleteModel(response http.ResponseWriter, request *http.Request) {
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 
@@ -164,8 +186,15 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 
 // UpdateModel - Updates a specific model
 func UpdateModel(response http.ResponseWriter, request *http.Request) {
-	var model models.Model
 	var err error
+
+	err = cookiehandler.VerifyCookie(response, request)
+
+	if err != nil {
+		return
+	}
+
+	var model models.Model
 
 	params := mux.Vars(request)
 	id, err := primitive.ObjectIDFromHex(params["id"])

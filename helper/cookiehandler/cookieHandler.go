@@ -25,7 +25,6 @@ func VerifyCookie(response http.ResponseWriter, request *http.Request) error {
 
 	tokenString := cookie.Value
 
-	// var claims models.Claims
 	claims := &models.Claims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
