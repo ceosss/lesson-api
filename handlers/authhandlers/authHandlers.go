@@ -14,11 +14,13 @@ import (
 	"github.com/ceosss/lesson-api/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Login ...
 func Login(response http.ResponseWriter, request *http.Request) {
 	var User models.User
+	var UserFromDB models.User
 	var err error
 
 	err = json.NewDecoder(request.Body).Decode(&User)
@@ -27,8 +29,25 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if User.Email != "swaraj@inspiritvr.com" || User.Password != "swaraj12" {
-		customerror.Unauthorized(&response, errors.New("Invalid Email or Password"))
+	// if User.Email != "swaraj@inspiritvr.com" || User.Password != "swaraj12" {
+	// 	customerror.Unauthorized(&response, errors.New("Invalid Email or Password"))
+	// 	return
+	// }
+
+	client, err := db.ConnectToDB()
+
+	if err != nil {
+		customerror.InternalServerError(&response, err)
+		return
+	}
+
+	userCollection := db.GetUserCollection(client)
+
+	filter := bson.M{"email": User.Email}
+	userCollection.FindOne(context.TODO(), filter).Decode(&UserFromDB)
+
+	if !password.DecodePassword(UserFromDB.Password, User.Password) {
+		customerror.InternalServerError(&response, errors.New("Invlaid Email or Password"))
 		return
 	}
 

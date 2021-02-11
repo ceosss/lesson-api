@@ -18,3 +18,20 @@ func EncodePassword(password string) (string, error) {
 	}
 	return string(hashedPassword), nil
 }
+
+// DecodePassword ...
+func DecodePassword(hashedPassword string, password string) bool {
+
+	byteHashedPassword := []byte(hashedPassword)
+	bytePassword := []byte(password)
+
+	err := bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
+
+	if err != nil {
+		fmt.Printf("ERROR: %v", err)
+		return false
+	}
+
+	return true
+
+}
