@@ -10,6 +10,7 @@ import (
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/jwtkey"
+	"github.com/ceosss/lesson-api/helper/password"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
@@ -72,6 +73,13 @@ func Register(response http.ResponseWriter, request *http.Request) {
 	err = v.Struct(user)
 	if err != nil {
 		customerror.BadRequest(&response, err)
+		return
+	}
+
+	user.Password, err = password.EncodePassword(user.Password)
+
+	if err != nil {
+		customerror.InternalServerError(&response, err)
 		return
 	}
 
