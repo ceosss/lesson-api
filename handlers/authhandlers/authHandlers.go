@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"time"
 
+	"github.com/ceosss/lesson-api/helper/cookiehandler"
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
-	"github.com/ceosss/lesson-api/helper/jwtkey"
 	"github.com/ceosss/lesson-api/helper/password"
 	"github.com/ceosss/lesson-api/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -51,29 +49,10 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	expirationTime := time.Now().Add(10 * time.Minute)
-
-	claims := models.Claims{
-		Email: User.Email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	tokenString, err := token.SignedString(jwtkey.GetJwtKey())
-
+	err = cookiehandler.GenerateJWT(&response, User.Email)
 	if err != nil {
-		customerror.InternalServerError(&response, err)
 		return
 	}
-
-	http.SetCookie(response, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-	})
 
 }
 
