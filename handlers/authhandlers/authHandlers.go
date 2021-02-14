@@ -10,6 +10,7 @@ import (
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/password"
+	"github.com/ceosss/lesson-api/helper/successresponse"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,11 +27,6 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		customerror.BadRequest(&response, err)
 		return
 	}
-
-	// if User.Email != "swaraj@inspiritvr.com" || User.Password != "swaraj12" {
-	// 	customerror.Unauthorized(&response, errors.New("Invalid Email or Password"))
-	// 	return
-	// }
 
 	client, err := db.ConnectToDB()
 
@@ -53,7 +49,7 @@ func Login(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		return
 	}
-
+	successresponse.OK(&response)
 }
 
 // Register ...
@@ -98,8 +94,7 @@ func Register(response http.ResponseWriter, request *http.Request) {
 
 	res.InsertedID = ""
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(200)
+	successresponse.OK(&response)
 	response.Write([]byte(`{  "response": "User Registered Successfully"}`))
 
 }
