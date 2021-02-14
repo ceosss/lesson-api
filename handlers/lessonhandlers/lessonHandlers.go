@@ -12,6 +12,7 @@ import (
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/initializemodels"
+	"github.com/ceosss/lesson-api/helper/successresponse"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -68,8 +69,7 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 
 	fmt.Println(id)
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(201)
+	successresponse.Created(&response)
 	response.Write([]byte(`{  "response": "` + id + `"}`))
 }
 
@@ -109,8 +109,7 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 		allLessons = append(allLessons, l)
 	}
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(200)
+	successresponse.OK(&response)
 	json.NewEncoder(response).Encode(allLessons)
 }
 
@@ -146,8 +145,7 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 	filter := bson.M{"_id": id}
 	lessonCollection.FindOne(context.TODO(), filter).Decode(&lesson)
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(http.StatusOK)
+	successresponse.OK(&response)
 	json.NewEncoder(response).Encode(lesson)
 }
 
@@ -186,8 +184,7 @@ func DeleteLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(204)
+	successresponse.NoContent(&response)
 }
 
 // UpdateLesson - Updates a specific lesson
@@ -236,7 +233,6 @@ func UpdateLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	fmt.Printf("LESSON UPDATED: %v", res)
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(204)
+	successresponse.NoContent(&response)
 
 }
