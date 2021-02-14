@@ -10,6 +10,7 @@ import (
 	"github.com/ceosss/lesson-api/helper/cookiehandler"
 	"github.com/ceosss/lesson-api/helper/customerror"
 	"github.com/ceosss/lesson-api/helper/db"
+	"github.com/ceosss/lesson-api/helper/successresponse"
 	"github.com/ceosss/lesson-api/models"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -62,8 +63,7 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 
 	res.InsertedID = ""
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(201)
+	successresponse.Created(&response)
 	response.Write([]byte(`{  "response": "Model Created Successfully"}`))
 }
 
@@ -104,8 +104,7 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 		allModels = append(allModels, m)
 	}
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(200)
+	successresponse.OK(&response)
 	json.NewEncoder(response).Encode(allModels)
 }
 
@@ -140,8 +139,7 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 	filter := bson.M{"_id": id}
 	modelCollection.FindOne(context.TODO(), filter).Decode(&model)
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(http.StatusOK)
+	successresponse.OK(&response)
 	json.NewEncoder(response).Encode(model)
 }
 
@@ -180,8 +178,7 @@ func DeleteModel(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(204)
+	successresponse.Created(&response)
 }
 
 // UpdateModel - Updates a specific model
@@ -239,7 +236,6 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	fmt.Printf("MODEL UPDATED: %v", res)
-	response.Header().Set("content-type", "application/json")
-	response.WriteHeader(204)
+	successresponse.NoContent(&response)
 
 }
