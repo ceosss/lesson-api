@@ -49,14 +49,14 @@ func CreateLesson(response http.ResponseWriter, request *http.Request) {
 
 	lesson := initializemodels.NewLesson(name.Name)
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	lessonCollection := db.GetLessonCollection(client)
+	// lessonCollection := db.GetLessonCollection(client)
 
 	res, err := lessonCollection.InsertOne(context.TODO(), lesson)
 
@@ -85,14 +85,14 @@ func AllLessons(response http.ResponseWriter, request *http.Request) {
 
 	var allLessons []models.Lesson
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	lessonCollection := db.GetLessonCollection(client)
+	// lessonCollection := db.GetLessonCollection(client)
 
 	cursor, err := lessonCollection.Find(context.TODO(), bson.M{})
 
@@ -133,14 +133,14 @@ func SingleLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	lessonCollection := db.GetLessonCollection(client)
+	// lessonCollection := db.GetLessonCollection(client)
 
 	filter := bson.M{"_id": id}
 	lessonCollection.FindOne(context.TODO(), filter).Decode(&lesson)
@@ -214,14 +214,14 @@ func UpdateLesson(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	lessonCollection := db.GetLessonCollection(client)
+	// lessonCollection := db.GetLessonCollection(client)
 
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": lesson}

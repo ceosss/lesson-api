@@ -45,14 +45,14 @@ func CreateModel(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	modelCollection := db.GetModelCollection(client)
+	// modelCollection := db.GetModelCollection(client)
 
 	res, err := modelCollection.InsertOne(context.TODO(), model)
 
@@ -80,14 +80,14 @@ func AllModels(response http.ResponseWriter, request *http.Request) {
 
 	var allModels []models.Model
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	modelCollection := db.GetModelCollection(client)
+	// modelCollection := db.GetModelCollection(client)
 
 	cursor, err := modelCollection.Find(context.TODO(), bson.M{})
 
@@ -128,14 +128,14 @@ func SingleModel(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	modelCollection := db.GetModelCollection(client)
+	// modelCollection := db.GetModelCollection(client)
 	filter := bson.M{"_id": id}
 	modelCollection.FindOne(context.TODO(), filter).Decode(&model)
 
@@ -217,14 +217,14 @@ func UpdateModel(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	modelCollection := db.GetModelCollection(client)
+	// modelCollection := db.GetModelCollection(client)
 
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": model}

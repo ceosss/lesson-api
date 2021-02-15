@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,7 +10,7 @@ import (
 )
 
 //ConnectToDB - Creates a connection to DB
-func ConnectToDB() (*mongo.Client, error) {
+func ConnectToDB() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -18,10 +18,9 @@ func ConnectToDB() (*mongo.Client, error) {
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-		return nil, err
+		log.Fatal(err)
 	}
-	return client, nil
+	return client
 }
 
 //GetModelCollection - Connects to the Model Collection

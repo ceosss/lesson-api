@@ -8,7 +8,6 @@ import (
 
 	"github.com/ceosss/lesson-api/helper/cookiehandler"
 	"github.com/ceosss/lesson-api/helper/customerror"
-	"github.com/ceosss/lesson-api/helper/db"
 	"github.com/ceosss/lesson-api/helper/password"
 	"github.com/ceosss/lesson-api/helper/successresponse"
 	"github.com/ceosss/lesson-api/models"
@@ -28,17 +27,17 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
+	// client, err := db.ConnectToDB()
 
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	userCollection := db.GetUserCollection(client)
+	// userCollection := db.GetUserCollection(client)
 
 	filter := bson.M{"email": User.Email}
-	userCollection.FindOne(context.TODO(), filter).Decode(&UserFromDB)
+	UserCollection.FindOne(context.TODO(), filter).Decode(&UserFromDB)
 
 	if !password.DecodePassword(UserFromDB.Password, User.Password) {
 		customerror.InternalServerError(&response, errors.New("Invlaid Email or Password"))
@@ -77,15 +76,15 @@ func Register(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client, err := db.ConnectToDB()
-	if err != nil {
-		customerror.InternalServerError(&response, err)
-		return
-	}
+	// client, err := db.ConnectToDB()
+	// if err != nil {
+	// 	customerror.InternalServerError(&response, err)
+	// 	return
+	// }
 
-	userCollection := db.GetUserCollection(client)
+	// userCollection := db.GetUserCollection(client)
 
-	res, err := userCollection.InsertOne(context.TODO(), user)
+	res, err := UserCollection.InsertOne(context.TODO(), user)
 
 	if err != nil {
 		customerror.InternalServerError(&response, err)
